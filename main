@@ -1,4 +1,5 @@
 import discord
+import rolling_d20
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -6,14 +7,19 @@ class MyClient(discord.Client):
 				
     async def on_message(self, message):
         # don't respond to ourselves
-        #if message.author == self.user:
-           # return
+        if message.author == self.user:
+            return
 
         if message.content == 'ping':
             await message.channel.send('pong')
 	    
-	if message.content == 'pong':
-		await message.channel.send('ping')
+        if message.content.startswith('!rolling'):
+            await message.channel.send(rolling_d20.rolling_d20())
 
 client = MyClient()
-client.run('ODU0ODU5NTA5Mjg5MTg5NDA2.YMqD9Q.eZIyERyVd3bMYa5dczfjCcCbOew')
+
+with open('myToken.txt','r') as pwd:
+    token = pwd.read()
+
+
+client.run(token)

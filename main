@@ -13,7 +13,7 @@ class MyClient(discord.Client):
         if message.content == 'ping':
             await message.channel.send('pong')
 	    
-        if message.content.startswith('!rolling'):
+        if message.content.startswith('!r'):
             await message.channel.send(rolling_d20.rolling_d20())
 
 client = MyClient()

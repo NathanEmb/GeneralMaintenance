@@ -1,6 +1,6 @@
 import discord
 import rolling_d20 as roll
-import connectionTest
+import databaseInsert
 
 
 class MyClient(discord.Client):
@@ -26,6 +26,17 @@ class MyClient(discord.Client):
         if message.content.startswith('!echo'):
             #connectionTest
             print("fu")
+
+        #Database connect and read test
+        if message.content == '!dbConnect':
+            databaseInsert.database_insert()
+
+        if message.content == '!msgHistory':
+            counter = 0
+            async for message in message.channel.history(limit=10):
+                data = [message.created_at , message.author , message.content]
+                print(data)
+
 
         if message.content == '!help':
             await message.channel.send("Hello! here are my current commands:\n\n 'ping' - I respond to you, cool\n'!r XdY' - I roll some dice for you \n '!echo' - I struggle to understand programming")

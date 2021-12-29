@@ -58,7 +58,7 @@ async def queue_listener(message):
                 yt = YouTube(str(message.content))
                 streams = yt.streams.filter(only_audio=True, audio_codec='opus')
                 audio_file = streams[0].download(output_path = (output_folder))
-                source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+                source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable='/bin/ffmpeg')
                 audio_queues[message.guild.id]['files'].append(audio_file)
                 audio_queues[message.guild.id]['sources'].append(source)
 
@@ -106,7 +106,7 @@ async def play(ctx, link):
     streams = yt.streams.filter(only_audio=True, audio_codec='opus')
     audio_file = streams[0].download(output_path = (output_folder))
     audio_queues[ctx.guild.id]['files'].append(audio_file)
-    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable='/bin/ffmpeg')
     audio_queues[ctx.guild.id]['sources'].append(source)
     print(audio_queues[ctx.guild.id])
 
@@ -134,7 +134,7 @@ async def queue(ctx):
     msg_text = 'There are ' + str(len(temp)) + ' songs in queue:\n'
     
     for i,song in enumerate(temp):
-        start_spot = song.rfind('\\')
+        start_spot = song.rfind('/')
         song_name = song[(start_spot+1):]
         song_name = song_name[:-5]
         msg_text = msg_text + str(i+1) + '. ' + song_name + '\n'

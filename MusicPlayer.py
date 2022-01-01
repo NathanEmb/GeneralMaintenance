@@ -13,7 +13,7 @@ class MusicPlayer(commands.Cog):
         self.audio_queues = {}
         self.now_playing_msg = {}   
         self.music_channel = {}     
-        self.directory_symbol = '\\'
+        self.directory_symbol = '/'
 
     async def now_playing(self, ctx):
         #Get the music-bot channel object
@@ -148,27 +148,28 @@ class MusicPlayer(commands.Cog):
         #Takes a youtube link sent in music-bot channel and appends the audio source to guild specific queue
         current_location = Path(__file__).parent
         output_folder = current_location / 'music' / str(message.guild.id)
-        if 'https://www.youtube.com/watch' in str(message.content) and ' ' not in str(message.content):
+        if 'youtube.com' in str(message.content) and ' ' not in str(message.content):
             if str(message.channel) == 'music-bot':
                 if message.guild.id in self.audio_queues.keys() and message.guild.id in self.audio_clients.keys():
                     yt = YouTube(str(message.content))
                     streams = yt.streams.filter(only_audio=True, audio_codec='opus')
                     audio_file = streams[0].download(output_path = (output_folder))
-                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'/bin/ffmpeg')
                     self.audio_queues[message.guild.id]['files'].append(audio_file)
                     self.audio_queues[message.guild.id]['sources'].append(source)
+                    await self.now_playing(ctx)
 
                     #if not playing anything: play new link
                     if not self.audio_clients[message.guild.id].is_playing():
                         self.audio_clients[message.guild.id].play(self.audio_queues[message.guild.id]['sources'][0],after=lambda x=0: self.check_queue(message,self.audio_clients[message.guild.id],self.audio_queues[message.guild.id]))
                     print(self.audio_queues[message.guild.id])
-                    await self.now_playing(ctx)
+                    
                     await message.delete()
 
     @commands.command(aliases=['p','pl'],brief = 'Play YouTube link audio!')
     async def play(self, ctx, link):
         #Look to see if any active voice clients, if not join where the user is
-        if 'youtube' not in ctx.message.content:
+        if 'youtube.com' not in ctx.message.content:
             await ctx.send('I can only play full YouTube links with this command(ie: not shortened youtu.be links)')
             return
         
@@ -203,10 +204,11 @@ class MusicPlayer(commands.Cog):
         streams = yt.streams.filter(only_audio=True, audio_codec='opus')
         audio_file = streams[0].download(output_path = (output_folder))
         self.audio_queues[ctx.guild.id]['files'].append(audio_file)
-        source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+        source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'/bin/ffmpeg')
+        await self.now_playing(ctx)
         self.audio_queues[ctx.guild.id]['sources'].append(source)
         print(self.audio_queues[ctx.guild.id])
-        await self.now_playing(ctx)
+        
 
         #If we aren't already playing, start playing, otherwise just add to end of queue
         if not self.audio_clients[ctx.guild.id].is_playing():

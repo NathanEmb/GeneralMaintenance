@@ -4108,4 +4108,7 @@ testScript
 DBInfo.txt
 archive.txt
 .gitignore
-
+music/
+/home/pi/GeneralMaintenance/GeneralMaintenance/music
+/home/pi/GeneralMaintenance/GeneralMaintenance/__pycache__
+__pycache__/MusicPlayer.cpython-37.pyc

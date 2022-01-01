@@ -13,6 +13,7 @@ if __name__ == '__main__':
 async def on_ready():
     print('Logged in as:',bot.user)
 
+
 @bot.command(aliases = ['goodjob'], brief = 'Pat your bud on the back, anonymously!', help = 'type !gj @username and I will deliver some reassuring pats to the specified user.')
 async def gj(ctx, user): 
     await ctx.message.delete()

@@ -23,6 +23,11 @@ async def gj(ctx, user):
 async def startup(ctx):
     await ctx.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="!help"))     
 
+@bot.command(brief = 'Initialize Shutdown', hidden = True)
+async def shutdown(ctx):
+    if ctx.message.author.name == 'Chasin':
+        await ctx.bot.close()
+
 with open('myToken.txt', 'r') as pwd:
     token = pwd.read()
 

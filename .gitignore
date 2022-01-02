@@ -4109,3 +4109,4 @@ DBInfo.txt
 archive.txt
 .gitignore
 
+__pycache__/MusicPlayer.cpython-38.pyc

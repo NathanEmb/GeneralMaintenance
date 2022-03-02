@@ -4,7 +4,8 @@ from pytube import YouTube, Playlist
 from pathlib import Path
 import os
 import asyncio
-from datetime import datetime
+from datetime import datetime 
+import platform
 
 class MusicPlayer(commands.Cog):
     def __init__(self,bot):
@@ -13,8 +14,15 @@ class MusicPlayer(commands.Cog):
         self.audio_clients = {}
         self.audio_queues = {}
         self.now_playing_msg = {}   
-        self.music_channel = {}     
-        self.directory_symbol = '\\'
+        self.music_channel = {}
+        if platform.system() == 'Windows':   
+            self.directory_symbol = '\\'
+            self.codec_path = r"C:\ffmpeg\bin\ffmpeg.exe"
+        elif platform.system() == 'Linux':
+            self.directory_symbol = '/'
+            self.codec_path = r"/bin/ffmpeg"
+        else:
+            print(platform.system())
 
     async def now_playing(self, ctx):
         #Get the music-bot channel object
@@ -170,7 +178,7 @@ class MusicPlayer(commands.Cog):
                     self.audio_queues[ctx.guild.id]['files'].append(audio_file)
                     await self.now_playing(ctx)
                     print('Creating source', ' - ', datetime.now().strftime("%H:%M:%S"))
-                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=self.codec_path)
                     self.audio_queues[ctx.guild.id]['sources'].append(source)
                     print('appending source', ' - ', datetime.now().strftime("%H:%M:%S"))
                     if not self.audio_clients[ctx.guild.id].is_playing() and not self.audio_clients[ctx.guild.id].is_paused():
@@ -191,7 +199,7 @@ class MusicPlayer(commands.Cog):
                     self.audio_queues[ctx.guild.id]['files'].append(audio_file)
                     await self.now_playing(ctx)
                     print('Creating source', ' - ', datetime.now().strftime("%H:%M:%S"))
-                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+                    source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=self.codec_path)
                     self.audio_queues[ctx.guild.id]['sources'].append(source)
                     print('appending source', ' - ', datetime.now().strftime("%H:%M:%S"))
                     #if not playing anything: play new link
@@ -252,7 +260,7 @@ class MusicPlayer(commands.Cog):
                 self.audio_queues[ctx.guild.id]['files'].append(audio_file)
                 await self.now_playing(ctx)
                 print('Creating source', ' - ', datetime.now().strftime("%H:%M:%S"))
-                source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+                source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=self.codec_path)
                 self.audio_queues[ctx.guild.id]['sources'].append(source)
                 print('appending source', ' - ', datetime.now().strftime("%H:%M:%S"))
                 if not self.audio_clients[ctx.guild.id].is_playing() and not self.audio_clients[ctx.guild.id].is_paused() :
@@ -267,7 +275,7 @@ class MusicPlayer(commands.Cog):
             streams = yt.streams.filter(only_audio=True, audio_codec='opus')
             audio_file = streams[0].download(output_path = (output_folder))
             self.audio_queues[ctx.guild.id]['files'].append(audio_file)
-            source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=r'C:\ffmpeg\bin\ffmpeg.exe')
+            source = await discord.FFmpegOpusAudio.from_probe(audio_file,method='fallback', executable=self.codec_path)
             self.audio_queues[ctx.guild.id]['sources'].append(source)
             print(self.audio_queues[ctx.guild.id])
             await self.now_playing(ctx)

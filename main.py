@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='?')
+bot = commands.Bot(command_prefix='.')
 
-cogs = ['MusicPlayer']
+cogs = ['MusicPlayer','CeaCommands']
 
 if __name__ == '__main__':
     for cog in cogs:

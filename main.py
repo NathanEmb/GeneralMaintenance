@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='.')
+bot = commands.Bot(command_prefix='?')
 
 cogs = ['MusicPlayer','CeaCommands']
 
@@ -28,8 +28,14 @@ async def shutdown(ctx):
     if ctx.message.author.name == 'Chasin':
         await ctx.bot.close()
 
-with open('myToken.txt', 'r') as pwd:
-    token = pwd.read()
+if platform.system() == 'Windows':   
+    with open('myToken.txt', 'r') as pwd:
+        token = pwd.read()
+
+elif platform.system() == 'Linux':
+    with open('/home/pi/GeneralMaintenance/GeneralMaintenance/myToken.txt', 'r') as pwd:
+        token = pwd.read()
+
 
 bot.run(token)
 

@@ -11,13 +11,19 @@ def get_org_teams(endpoint, org, bracket):
 
     bracket_dict = bracket_req.json()
     scoreboard_dict = scoreboard_req.json()
+    
+    try:
+        time_updated = scoreboard_dict['data']['uts'][0:10]
+    except:
+        print('no-uts')
+        time_updated = '0000-00-00'
 
     team_summary = bracket_dict['data'][0]['ts']
     scoreboard_data = scoreboard_dict['data']['rs']
     org_teams = list()
 
     for team_dict in team_summary:
-        if team_dict['org'].lower() == org.lower():
+        if org.lower() in team_dict['org'].lower() or  team_dict['org'].lower() in org.lower():
             team_wins = int()
             team_loss = int()
             team_rank = int()
@@ -31,10 +37,11 @@ def get_org_teams(endpoint, org, bracket):
                         team_tie = team['t']
                     team_rank = team['r']
 
-            temp_dict = {'rank':team_rank}   
-            temp_dict['data'] ={
+            temp_dict = {'rank':team_rank} 
+            temp_dict['tid'] = team_dict['tid']  
+            temp_dict[team_dict['tid']] = {
             'dn':team_dict['dn'],
-            'tid':team_dict['tid'],
+            'uts':time_updated,
             'org':team_dict['org'],
             'swiss_points':team_score,
             'wins':team_wins,
